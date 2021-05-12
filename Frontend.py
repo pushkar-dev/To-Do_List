@@ -76,8 +76,11 @@ def setscreen(root):
     alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
     root.geometry(alignstr)
     root.resizable(width=False, height=False)
-    icon=tk.PhotoImage(file='icon.png')
-    root.iconphoto(False,icon)
+    try:
+        icon=tk.PhotoImage(file='icon.png')
+        root.iconphoto(False,icon)
+    except:
+        pass
     root.title('TO-DO List')
 
 def setlabels(root):
