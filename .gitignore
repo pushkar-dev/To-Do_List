@@ -1,2 +1,2 @@
-__pychache__/
-tasksdata.db
+/__pychache__/*
+*.db
