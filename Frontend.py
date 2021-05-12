@@ -1,21 +1,16 @@
 import tkinter as tk
-import tkinter.scrolledtext as scrolledtext
-import tkinter.font as tkFont
 import tkinter.messagebox as messagebox
-from datetime import datetime
-from time import sleep
 from api import todolist
 from base import task, duedate
 
 
-def create_task():
-    '''this is a function to create tasks'''
-    '''It needs to be edited more'''
+def refresh_list():
+    '''this is a fuction that refreshes the listbox'''
+    
     Todo.update()
     Task_list.delete(0,tk.END)
     for task in Todo.getall():
         Task_list.insert(tk.END,str(task))
-        #sleep(0.05)
 
 class EntryWithPlaceholder(tk.Entry):
     def __init__(self, master=None, placeholder="PLACEHOLDER", color='grey',**kwargs):
@@ -46,24 +41,32 @@ class EntryWithPlaceholder(tk.Entry):
         self.delete(0, 'end')
 
 def add_button_command():
+    #this function controls adding of events
     taskname=TaskDesc.get()
     hm=HMData.get()
     date=DateData.get()
+    if taskname=='enter task description' or hm=='HH:MM' or date=='DD/MM/YYYY':
+        messagebox.showerror('Invalid or Incomplete Input','Please enter Correct input according to format')
+        return 
     date=list(date.split('/'))
     Todo.addtask(task(taskname, '', duedate(hm,date[0],date[1],date[2])))
-    create_task()
+    refresh_list()
+
+def del_button_command():
+    #print(Task_list.get(tk.ACTIVE))
+    s=str(Task_list.get(tk.ACTIVE)).split(',')[0]
+    confirm=messagebox.askquestion(f'Delete {s}',f'Are you sure you want to delete {s}')
+    if confirm=='yes':
+        Todo.delete(s)
+        refresh_list()
+
+
+
 
 def Cmp_button_command():
     print("command for displaying comppleted task button")
 
-def Task_list_add():
-    '''task = entry_task.get()
-    if task != "":
-        listbox_tasks.insert(tkinter.END, task)
-        entry_task.delete(0, tkinter.END)
-    else:
-        tkinter.messagebox.showwarning(title="Warning!", message="You must enter a task.")'''
-    messagebox.showwarning(title="Warning!", message="Under Development")
+
 
 def setscreen(root):
     width=600
@@ -94,6 +97,9 @@ def setlabels(root):
 
     add_button=tk.Button(root,text='ADD',font=('Ariel',10),bg="#cffefa",fg="#fb630c",command=add_button_command)
     add_button.place(x=240,y=170,width=95,height=30)
+
+    ref_button=tk.Button(root,text='⟳',font=('Ariel',20),fg="#084d81",command=refresh_list)
+    ref_button.place(x=520,y=200,width=50,height=30)
 
 
     radio1=tk.Radiobutton(root,text='Least',font=('Ariel',10),variable=Radiovar,value=1)
@@ -134,8 +140,9 @@ scrollbar_tasks.config(command=Task_list.yview)
 Cmp_button=tk.Button(root,text='Show Completed Tasks',bg='#cffefa',fg="#084d81",font=('Ariel',10),command=Cmp_button_command)
 Cmp_button.place(x=400,y=460,width=180,height=30)
 
+del_button=tk.Button(root,text='Delete Task',bg='#cffefa',fg="#084d81",font=('Ariel',10),command=del_button_command)
+del_button.place(x=10,y=460,width=180,height=30)
 
-root.after(1000,create_task)
+root.after(1000,refresh_list)
 
 root.mainloop()
-

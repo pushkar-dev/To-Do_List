@@ -1,11 +1,14 @@
 from base import duedate,task
+import hashlib
 from database import create_tables,add_task,get_task_all,get_task_one,connect,delete_task,add_to_done
 
 class todolist:
     def __init__(self):
         self.__salt=b'm\xffW \x98Ix011\n\xf0\x86\xb2\xdd\xb6\xd4jC j\xb5\xaa\xe2#"\x19\xbd\xe0\xc1\x9bf'
         self.__key=b'\x04V\x81\x17\x7fq\xc4FN\xaf\x08\x8c\x9e\xc9\xdc\xd5Se<\x1d\x89.\xf8\xde\x94\xa7+L\x14\xbc\xb3,'
+        
         self.__database='tasksdata.db'
+        create_tables(connect(self.__database)) #set up database if not already
         
     def authenticate (self,pwdtocheck) -> bool: #tested once, result +ve
         key1=hashlib.pbkdf2_hmac('sha256',pwdtocheck.encode('utf-8'),self.__salt,10000)
@@ -39,5 +42,9 @@ class todolist:
                 delete_task(connect(self.__database), task)
                 add_to_done(connect(self.__database), task)
                 #task is closed
+    def delete(self,taskname):
+        delete_task(connect(self.__database),taskname)
+
+    
     def extend_task(self,task,extended_date):
         extended_date(connect(self.__database),task,extended_date)

@@ -1,17 +1,20 @@
 import sqlite3
 
-CREATE_TABLE_TASKS='''IF NOT EXISTS CREATE TABLE tasks( 
-    ID INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL,
-    NAME TEXT NOT NULL,
-    DESC TEXT,
-    TIM TEXT NOT NULL,
-    DDMMYYYY TEXT NOT NULL);'''
-CREATE_TABLE_FINISHEDTASKS='''IF NOT EXISTS CREATE TABLE finished_tasks( 
-    ID INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL,
-    NAME TEXT NOT NULL,
-    DESC TEXT,
-    TIM TEXT NOT NULL,
-    DDMMYYYY TEXT NOT NULL);'''
+table_dict={
+    'tasks':'''CREATE TABLE tasks( 
+            ID INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL,
+            NAME TEXT NOT NULL,
+            DESC TEXT,
+            TIM TEXT NOT NULL,
+            DDMMYYYY TEXT NOT NULL);''',
+    'finished_tasks':'''CREATE TABLE finished_tasks( 
+                        ID INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL,
+                        NAME TEXT NOT NULL,
+                        DESC TEXT,
+                        TIM TEXT NOT NULL,
+                        DDMMYYYY TEXT NOT NULL);'''
+}
+
 ADD_TASK='''INSERT INTO tasks (NAME,DESC,TIM,DDMMYYYY) VALUES (?,?,?,?);'''
 ADD_TASK_FINISHED='''INSERT INTO finished_tasks (NAME,DESC,TIM,DDMMYYYY) VALUES (?,?,?,?);'''
 GET_TASK='''SELECT NAME,DESC,TIM,DDMMYYYY FROM tasks WHERE NAME = (?)'''
@@ -24,9 +27,11 @@ def connect(database):
 
 def create_tables(connection):
     with connection:
-        cur = connection.cursor()
-        cur.execute(CREATE_TABLE_TASKS)
-        cur.execute(CREATE_TABLE_FINISHEDTASKS)
+        cur=connection.cursor()
+        tablelists=cur.execute('SELECT name FROM sqlite_master WHERE type = \'table\'').fetchall()
+        for tablename in table_dict:
+            if (tablename,) not in tablelists:
+                cur.execute(table_dict[tablename])
 
 def add_task(connection,task):
     with connection:
@@ -47,10 +52,10 @@ def get_task_all(connection):
         cur = connection.cursor()
         cur.execute(GET_TASK_ALL)
         return list(cur.fetchall())
-def delete_task(connection,task):
+def delete_task(connection,taskname):
     with connection:
         cur=connection.cursor()
-        cur.execute(DELETE_TASK,(task.name,))
+        cur.execute(DELETE_TASK,(taskname,))
 
 def add_to_done(connection,task):
     with connection:
