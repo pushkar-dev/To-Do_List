@@ -36,15 +36,14 @@ class todolist:
         return res
 
     def update(self):
-        all_tasks=self.getall()
-        for task in all_tasks:
-            if task.due_on.is_past():
-                delete_task(connect(self.__database), task)
-                add_to_done(connect(self.__database), task)
-                #task is closed
+        pass
     def delete(self,taskname):
         delete_task(connect(self.__database),taskname)
 
     
     def extend_task(self,task,extended_date):
         extended_date(connect(self.__database),task,extended_date)
+    
+    def mark_complete(self,task):
+        add_to_done(connect(self.__database),task)
+        delete_task(connect(self.__database),task)

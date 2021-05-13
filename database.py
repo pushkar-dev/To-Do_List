@@ -52,10 +52,10 @@ def get_task_all(connection):
         cur = connection.cursor()
         cur.execute(GET_TASK_ALL)
         return list(cur.fetchall())
-def delete_task(connection,taskname):
+def delete_task(connection,task):
     with connection:
         cur=connection.cursor()
-        cur.execute(DELETE_TASK,(taskname,))
+        cur.execute(DELETE_TASK,(task.name,))
 
 def add_to_done(connection,task):
     with connection:
@@ -66,5 +66,4 @@ def extend_date(connection,task,newdate):
     with connection:
         cur=connection.cursor()
         cur.execute(EXTEND_DATE,(newdate[0],newdate[1],task.name))
-
 

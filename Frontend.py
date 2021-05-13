@@ -1,13 +1,13 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
 from api import todolist
-from base import task, duedate
+from base import task, duedate , task_from_str
 
 
 def refresh_list():
     '''this is a fuction that refreshes the listbox'''
     
-    Todo.update()
+    #Todo.update()
     Task_list.delete(0,tk.END)
     for task in Todo.getall():
         Task_list.insert(tk.END,str(task))
@@ -54,19 +54,23 @@ def add_button_command():
 
 def del_button_command():
     #print(Task_list.get(tk.ACTIVE))
-    s=str(Task_list.get(tk.ACTIVE)).split(',')[0]
-    confirm=messagebox.askquestion(f'Delete {s}',f'Are you sure you want to delete {s}')
+    s=str(Task_list.get(tk.ACTIVE)).split(',')
+    confirm=messagebox.askquestion(f'Delete {s[0]}',f'Are you sure you want to delete {s[0]}')
+    task1=task_from_str(s)
     if confirm=='yes':
-        Todo.delete(s)
+        Todo.delete(task1)
         refresh_list()
 
-
-
+def check_button_command():
+    s=str(Task_list.get(tk.ACTIVE)).split(',')
+    confirm=messagebox.askquestion(f'Mark {s[0]}',f'Are you sure you want to mark {s[0]} as complete?')
+    task1=task_from_str(s)
+    if confirm=='yes':
+        Todo.mark_complete(task1)
+        refresh_list()
 
 def Cmp_button_command():
-    print("command for displaying comppleted task button")
-
-
+    print("command for displaying comppleted task button,under development")
 
 def setscreen(root):
     width=600
@@ -145,6 +149,9 @@ Cmp_button.place(x=400,y=460,width=180,height=30)
 
 del_button=tk.Button(root,text='Delete Task',bg='#cffefa',fg="#084d81",font=('Ariel',10),command=del_button_command)
 del_button.place(x=10,y=460,width=180,height=30)
+
+check_button=tk.Button(root,text='Mark as Done',bg='#cffefa',fg="#02a628",font=('Ariel',10),command=check_button_command)
+check_button.place(x=200,y=460,width=190,height=30)
 
 root.after(1000,refresh_list)
 
