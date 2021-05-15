@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
 from api import todolist
-from base import task, duedate , task_from_str
+from base import task, duedate , task_from_str, check_input
 
 
 def refresh_list():
@@ -45,10 +45,11 @@ def add_button_command():
     taskname=TaskDesc.get()
     hm=HMData.get()
     date=DateData.get()
-    if taskname=='enter task description' or hm=='HH:MM' or date=='DD/MM/YYYY':
-        messagebox.showerror('Invalid or Incomplete Input','Please enter Correct input according to format')
-        return 
     date=list(date.split('/'))
+    msg=check_input(taskname,hm,date)
+    if msg!=0:
+        messagebox.showerror('Invalid or Incomplete Input',msg)
+        return 
     Todo.addtask(task(taskname, '', duedate(hm,date[0],date[1],date[2])))
     refresh_list()
 
@@ -136,13 +137,17 @@ frame_tasks = tk.Frame(root)
 frame_tasks.place(x=10,y=230,width=580,height=220)
 
 Task_list=tk.Listbox(frame_tasks,font=('Ariel',10),borderwidth='1px')
-Task_list.place(x=0,y=0,width=575,height=219)
+Task_list.place(x=0,y=0,width=564,height=210)
 
 scrollbar_tasks = tk.Scrollbar(frame_tasks)
 scrollbar_tasks.pack(side=tk.RIGHT, fill=tk.Y)
-
 Task_list.config(yscrollcommand=scrollbar_tasks.set)
 scrollbar_tasks.config(command=Task_list.yview)
+
+scrollbar_tasks_h = tk.Scrollbar(frame_tasks,orient=tk.HORIZONTAL)
+scrollbar_tasks_h.pack(side=tk.BOTTOM, fill=tk.X)
+Task_list.config(xscrollcommand=scrollbar_tasks_h.set)
+scrollbar_tasks_h.config(command=Task_list.xview)
 
 Cmp_button=tk.Button(root,text='Show Completed Tasks',bg='#cffefa',fg="#084d81",font=('Ariel',10),command=Cmp_button_command)
 Cmp_button.place(x=400,y=460,width=180,height=30)
@@ -153,6 +158,6 @@ del_button.place(x=10,y=460,width=180,height=30)
 check_button=tk.Button(root,text='Mark as Done',bg='#cffefa',fg="#02a628",font=('Ariel',10),command=check_button_command)
 check_button.place(x=200,y=460,width=190,height=30)
 
-root.after(1000,refresh_list)
+root.after(0,refresh_list)
 
 root.mainloop()

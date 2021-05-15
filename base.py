@@ -1,7 +1,6 @@
 from datetime import datetime,timedelta
 
 
-
 class duedate:
     #dynamically updated duedate class
     #no need of external updating
@@ -59,4 +58,32 @@ def task_from_str(raws):
     newtask=task(name,'',duedate(time,day,month,year))
     return newtask
 
+def check_input(taskname,hm,date):
+    #task(taskname, '', duedate(hm,date[0],date[1],date[2])
+    if taskname=='enter task description' or taskname.isspace():
+        return 'Unnamed Task'
+    if hm=='HH:MM':
+        return 'Time Feild empty'
+    hm1=hm
+    if ':' in hm1:
+        hm1=hm1.split(':')
+        if len(hm1)!=2:
+            return 'Incorrect Time input must be of format HH:MM '
+        try:
+            if not int(hm1[0]) in range(24):
+                return 'Improper Hour input must be in [0,23]'
+        except ValueError:
+            return 'Hour must be a integer in [0,23]'    
+        try:
+            if not int(hm1[1]) in range(60):
+                return 'Improper minute inute input must be in [0,59]'
+        except ValueError:
+            return 'Minute input must be a integer in [0,59]'
+    else:
+        return 'Improper Time input'
+    try:
+        duedate(hm,date[0],date[1],date[2])
+    except ValueError:
+        return 'invalid date input, must be DD/MM/YYYY format'
     
+    return 0
