@@ -1,6 +1,6 @@
 from base import duedate,task
 import hashlib
-from database import create_tables,add_task,get_task_all,get_task_one,connect,delete_task,add_to_done
+from database import create_tables,add_task,get_task_all,get_task_one,delete_task,add_to_done
 
 class todolist:
     def __init__(self):
@@ -8,7 +8,7 @@ class todolist:
         self.__key=b'\x04V\x81\x17\x7fq\xc4FN\xaf\x08\x8c\x9e\xc9\xdc\xd5Se<\x1d\x89.\xf8\xde\x94\xa7+L\x14\xbc\xb3,'
         
         self.__database='tasksdata.db'
-        create_tables(connect(self.__database)) #set up database if not already
+        create_tables(self.__database) #set up database if not already
         
     def authenticate (self,pwdtocheck) -> bool: #tested once, result +ve
         key1=hashlib.pbkdf2_hmac('sha256',pwdtocheck.encode('utf-8'),self.__salt,10000)
@@ -18,17 +18,17 @@ class todolist:
             return False
     
     def addtask(self,newtask : task ) ->None:
-        add_task(connect(self.__database),newtask)
+        add_task(self.__database,newtask)
     
     def getone(self,name) ->task:
-        res=get_task_one(connect(self.__database), name)
+        res=get_task_one(self.__database, name)
         if res!= None:
             res3=res[3].split('/')
             return task(res[0],res[1],duedate(res[2],*res3))
         else: return res
     
     def getall(self):
-        res=get_task_all(connect(self.__database))
+        res=get_task_all(self.__database)
         for i in range(len(res)):
             t=res[i]
             t3=res[i][3].split('/')
@@ -38,12 +38,12 @@ class todolist:
     def update(self):
         pass
     def delete(self,taskname):
-        delete_task(connect(self.__database),taskname)
+        delete_task(self.__database,taskname)
 
     
     def extend_task(self,task,extended_date):
-        extended_date(connect(self.__database),task,extended_date)
+        extended_date(self.__database,task,extended_date)
     
     def mark_complete(self,task):
-        add_to_done(connect(self.__database),task)
-        delete_task(connect(self.__database),task)
+        add_to_done(self.__database,task)
+        delete_task(self.__database,task)

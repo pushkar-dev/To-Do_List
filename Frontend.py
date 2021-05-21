@@ -9,7 +9,7 @@ def refresh_list():
     
     #Todo.update()
     Task_list.delete(0,tk.END)
-    for task in Todo.getall():
+    for task in sorted(Todo.getall(),key=lambda x: x.due_on.delta()):
         Task_list.insert(tk.END,str(task))
 
 class EntryWithPlaceholder(tk.Entry):

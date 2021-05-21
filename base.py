@@ -17,6 +17,8 @@ class duedate:
         self.due+=timedelta(days=day,hours=h,minutes=m)
     def is_past(self):
         return (datetime.now()>self.due) #to delete a task
+    def delta(self):
+        return self.due-datetime.now()
 
 class task:
     def __init__(self,name,desc,due,imp=0):
