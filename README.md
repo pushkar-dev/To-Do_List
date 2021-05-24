@@ -16,4 +16,4 @@ Open Frontend.py
 # In Progress
 1. Show completed tasks
 2. significance radio button commands
-3. i have added this extra line to try git
+3. delete button functionality improvements
