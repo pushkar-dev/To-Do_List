@@ -19,7 +19,7 @@ ADD_TASK='''INSERT INTO tasks (NAME,DESC,TIM,DDMMYYYY) VALUES (?,?,?,?);'''
 ADD_TASK_FINISHED='''INSERT INTO finished_tasks (NAME,DESC,TIM,DDMMYYYY) VALUES (?,?,?,?);'''
 GET_TASK='''SELECT NAME,DESC,TIM,DDMMYYYY FROM tasks WHERE NAME = (?)'''
 GET_TASK_ALL='''SELECT NAME,DESC,TIM,DDMMYYYY FROM tasks'''
-DELETE_TASK='''DELETE FROM tasks WHERE NAME=(?)'''
+DELETE_TASK='''DELETE FROM tasks WHERE NAME=(?)''' #under development
 EXTEND_DATE='''UPDATE tasks SET TIM=(?),DDMMYYYY=(?) WHERE NAME=(?) '''
 
 def create_tables(database):
@@ -63,4 +63,3 @@ def extend_date(database,task,newdate):
     with sqlite3.connect(database) as connection:
         cur=connection.cursor()
         cur.execute(EXTEND_DATE,(newdate[0],newdate[1],task.name))
-
