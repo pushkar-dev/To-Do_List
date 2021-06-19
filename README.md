@@ -5,15 +5,17 @@ It is a offline application aims at keeping track of daily activities and tasks.
 Python 3 and Tkinter
 # User Guide
 Open Frontend.py
-![image](https://user-images.githubusercontent.com/79650452/119090570-67a19400-ba29-11eb-9a68-724166c16c9f.png)
-![image](https://user-images.githubusercontent.com/79650452/119090601-725c2900-ba29-11eb-9792-54a09cb22e8b.png)
-![image](https://user-images.githubusercontent.com/79650452/119090636-7ee08180-ba29-11eb-934b-4fdb27a534ce.png)
+![image](https://user-images.githubusercontent.com/79650452/122635806-83b95380-d103-11eb-9117-91eb1a678d10.png)
+![image](https://user-images.githubusercontent.com/79650452/122635856-cbd87600-d103-11eb-9356-9e9587973e48.png)
+![image](https://user-images.githubusercontent.com/79650452/122635905-0c37f400-d104-11eb-8699-9cae8cd80094.png)
+
 
 # Last update
-1. Now tasks are arranged by duedate
-2. Problem of stray connectors was removed
+1. Visual Revamp
+2. completed tasks tab added
+3. notes tab added
 
 # In Progress
-1. Show completed tasks
-2. significance radio button commands
-3. delete button functionality improvements
+1. significance radio button commands
+2. delete button functionality improvements
+3. UI and functional Improvements of newly added tabs
