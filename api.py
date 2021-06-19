@@ -1,6 +1,6 @@
 from base import duedate,task
 import hashlib
-from database import create_tables,add_task,get_task_all,get_task_one,delete_task,add_to_done
+from database import create_tables,add_task,get_task_all,get_task_one,delete_task,add_to_done,get_done_tasks
 
 class todolist:
     def __init__(self):
@@ -34,9 +34,16 @@ class todolist:
             t3=res[i][3].split('/')
             res[i]=task(t[0],t[1],duedate(t[2],*t3))
         return res
+    
+    def get_completed(self):
+        raw= get_done_tasks(self.__database)
+        processed=[]
+        for s in reversed(raw):
+            res=str(s[1])+ ' was due on'+ str(s[2]) + str(s[3])+ ' '+str(s[4])+' completed on' + str(s[5])#+str(s[6])
+            processed.append(res)
+        
+        return processed
 
-    def update(self):
-        pass
     def delete(self,taskname):
         delete_task(self.__database,taskname)
 

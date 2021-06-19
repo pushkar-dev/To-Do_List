@@ -12,7 +12,8 @@ table_dict={
                         NAME TEXT NOT NULL,
                         DESC TEXT,
                         TIM TEXT NOT NULL,
-                        DDMMYYYY TEXT NOT NULL);'''
+                        DDMMYYYY TEXT NOT NULL,
+                        Finished_On TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL);'''
 }
 
 ADD_TASK='''INSERT INTO tasks (NAME,DESC,TIM,DDMMYYYY) VALUES (?,?,?,?);'''
@@ -21,6 +22,7 @@ GET_TASK='''SELECT NAME,DESC,TIM,DDMMYYYY FROM tasks WHERE NAME = (?)'''
 GET_TASK_ALL='''SELECT NAME,DESC,TIM,DDMMYYYY FROM tasks'''
 DELETE_TASK='''DELETE FROM tasks WHERE NAME=(?)''' #under development
 EXTEND_DATE='''UPDATE tasks SET TIM=(?),DDMMYYYY=(?) WHERE NAME=(?) '''
+GET_DONE_TASKS='''SELECT * FROM finished_tasks'''
 
 def create_tables(database):
     with sqlite3.connect(database) as connection:
@@ -49,6 +51,13 @@ def get_task_all(database):
         cur = connection.cursor()
         cur.execute(GET_TASK_ALL)
         return list(cur.fetchall())
+
+def get_done_tasks(database):
+    with sqlite3.connect(database) as connection:
+        cur = connection.cursor()
+        cur.execute(GET_DONE_TASKS)
+        return list(cur.fetchall())
+
 def delete_task(database,task):
     with sqlite3.connect(database) as connection:
         cur=connection.cursor()

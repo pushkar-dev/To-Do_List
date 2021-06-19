@@ -60,6 +60,13 @@ def task_from_str(raws):
     newtask=task(name,'',duedate(time,day,month,year))
     return newtask
 
+def parse_done(rec):
+    res=''
+    res+=f'{rec[1]} '
+    res+=f'was due on {rec[4]} {rec[3]}'
+    res+=f', Closed on {rec[5]}'
+    return res
+
 def check_input(taskname,hm,date):
     #task(taskname, '', duedate(hm,date[0],date[1],date[2])
     if taskname=='enter task description' or taskname.isspace():

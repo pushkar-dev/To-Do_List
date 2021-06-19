@@ -1,8 +1,8 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
+from tkinter import ttk
 from api import todolist
 from base import task, duedate , task_from_str, check_input
-
 
 def refresh_list():
     '''this is a fuction that refreshes the listbox'''
@@ -11,6 +11,10 @@ def refresh_list():
     Task_list.delete(0,tk.END)
     for task in sorted(Todo.getall(),key=lambda x: x.due_on.delta()):
         Task_list.insert(tk.END,str(task))
+
+    completed_list.delete(0,tk.END)
+    for task in Todo.get_completed():
+        completed_list.insert(tk.END,str(task))
 
 class EntryWithPlaceholder(tk.Entry):
     def __init__(self, master=None, placeholder="PLACEHOLDER", color='grey',**kwargs):
@@ -75,7 +79,7 @@ def Cmp_button_command():
 
 def setscreen(root):
     width=600
-    height=500
+    height=525
     screenwidth = root.winfo_screenwidth()
     screenheight = root.winfo_screenheight()
     alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
@@ -87,6 +91,7 @@ def setscreen(root):
     except:
         pass
     root.title('TO-DO List')
+    
 
 def setlabels(root):
     head_label=tk.Label(root,text='Task Assistant',font=('Ariel',18),bg='#cffefa',fg='#084d81',relief='raised')
@@ -120,6 +125,84 @@ def setlabels(root):
 
     radio3=tk.Radiobutton(root,text='Urgent',font=('Ariel',10),variable=Radiovar,value=3)
     radio3.place(x=230,y=130,width=85,height=25)
+    frame_tasks = tk.Frame(root)
+    frame_tasks.place(x=10,y=230,width=580,height=220)
+
+    global Task_list
+    Task_list=tk.Listbox(frame_tasks,font=('Ariel',10),borderwidth='1px')
+    Task_list.place(x=0,y=0,width=564,height=210)
+
+    scrollbar_tasks = tk.Scrollbar(frame_tasks)
+    scrollbar_tasks.pack(side=tk.RIGHT, fill=tk.Y)
+    Task_list.config(yscrollcommand=scrollbar_tasks.set)
+    scrollbar_tasks.config(command=Task_list.yview)
+
+    scrollbar_tasks_h = tk.Scrollbar(frame_tasks,orient=tk.HORIZONTAL)
+    scrollbar_tasks_h.pack(side=tk.BOTTOM, fill=tk.X)
+    Task_list.config(xscrollcommand=scrollbar_tasks_h.set)
+    scrollbar_tasks_h.config(command=Task_list.xview)
+
+    del_button=tk.Button(root,text='Delete Task',bg='#cffefa',fg="#bd0704",font=('Ariel',10),command=del_button_command)
+    del_button.place(x=400,y=460,width=180,height=30)
+
+    check_button=tk.Button(root,text='Mark as Done',bg='#cffefa',fg="#02a628",font=('Ariel',10),command=check_button_command)
+    check_button.place(x=10,y=460,width=190,height=30)
+
+def setlabels_tab2(root):
+    head_label=tk.Label(root,text='Completed Tasks',font=('Ariel',18),bg='#cffefa',fg='#084d81',relief='raised')
+    head_label.place(x=190,y=10,width=206,height=48)
+
+    frame_tasks = tk.Frame(root)
+    frame_tasks.place(x=10,y=80,width=580,height=400)
+
+    global completed_list
+    completed_list=tk.Listbox(frame_tasks,font=('Ariel',10),borderwidth='1px')
+    completed_list.place(x=0,y=0,width=564,height=380)
+
+    scrollbar_tasks = tk.Scrollbar(frame_tasks)
+    scrollbar_tasks.pack(side=tk.RIGHT, fill=tk.Y)
+    completed_list.config(yscrollcommand=scrollbar_tasks.set)
+    scrollbar_tasks.config(command=completed_list.yview)
+
+    scrollbar_tasks_h = tk.Scrollbar(frame_tasks,orient=tk.HORIZONTAL)
+    scrollbar_tasks_h.pack(side=tk.BOTTOM, fill=tk.X)
+    completed_list.config(xscrollcommand=scrollbar_tasks_h.set)
+    scrollbar_tasks_h.config(command=completed_list.xview)
+
+def set_lables_note(root):
+    def save_text():
+        with open('usernotes.txt','w') as f:
+            txt=notepad.get("1.0", "end-1c")
+            f.writelines(txt)
+    
+    def get_text():
+        txt=''
+        try:
+            with open('usernotes.txt','r+') as f:
+                txt=''.join(i for i in f.readlines())
+        except:
+            pass
+        return txt
+
+    frame_note=tk.Frame(root)
+    frame_note.place(x=10,y=80,width=580,height=400)
+
+    head_label=tk.Label(root,text='User Notes',font=('Ariel',18),bg='#cffefa',fg='#084d81',relief='raised')
+    head_label.place(x=190,y=10,width=206,height=48)
+
+    notepad=tk.Text(frame_note,font=('Ariel',10),borderwidth='1px')
+    notepad.place(x=0,y=0,width=564,height=380)
+    notepad.insert(tk.END,get_text())
+
+    scrollbar_notepad = tk.Scrollbar(frame_note)
+    scrollbar_notepad.pack(side=tk.RIGHT, fill=tk.Y)
+    notepad.config(yscrollcommand=scrollbar_notepad.set)
+    scrollbar_notepad.config(command=notepad.yview)
+
+    save_button=tk.Button(root,text='Save',bg='#cffefa',fg="#02a628",font=('Ariel',10),command=save_text)
+    save_button.place(x=10,y=460,width=190,height=30)
+    
+
 
 Todo=todolist()
 
@@ -131,32 +214,19 @@ Radiovar=tk.IntVar()
 Radiovar.set(0)
 
 setscreen(root)
-setlabels(root)
 
-frame_tasks = tk.Frame(root)
-frame_tasks.place(x=10,y=230,width=580,height=220)
+tabcontrol=ttk.Notebook(root)
+tab1=ttk.Frame(tabcontrol)
+tab2=ttk.Frame(tabcontrol)
+tab3=ttk.Frame(tabcontrol)
+tabcontrol.add(tab1,text='Tasks')
+tabcontrol.add(tab2,text='Finished Tasks')
+tabcontrol.add(tab3,text='Notes')
+tabcontrol.pack(expand=1,fill='both')
 
-Task_list=tk.Listbox(frame_tasks,font=('Ariel',10),borderwidth='1px')
-Task_list.place(x=0,y=0,width=564,height=210)
-
-scrollbar_tasks = tk.Scrollbar(frame_tasks)
-scrollbar_tasks.pack(side=tk.RIGHT, fill=tk.Y)
-Task_list.config(yscrollcommand=scrollbar_tasks.set)
-scrollbar_tasks.config(command=Task_list.yview)
-
-scrollbar_tasks_h = tk.Scrollbar(frame_tasks,orient=tk.HORIZONTAL)
-scrollbar_tasks_h.pack(side=tk.BOTTOM, fill=tk.X)
-Task_list.config(xscrollcommand=scrollbar_tasks_h.set)
-scrollbar_tasks_h.config(command=Task_list.xview)
-
-Cmp_button=tk.Button(root,text='Show Completed Tasks',bg='#cffefa',fg="#084d81",font=('Ariel',10),command=Cmp_button_command)
-Cmp_button.place(x=400,y=460,width=180,height=30)
-
-del_button=tk.Button(root,text='Delete Task',bg='#cffefa',fg="#084d81",font=('Ariel',10),command=del_button_command)
-del_button.place(x=10,y=460,width=180,height=30)
-
-check_button=tk.Button(root,text='Mark as Done',bg='#cffefa',fg="#02a628",font=('Ariel',10),command=check_button_command)
-check_button.place(x=200,y=460,width=190,height=30)
+setlabels(tab1)
+setlabels_tab2(tab2)
+set_lables_note(tab3)
 
 root.after(0,refresh_list)
 
