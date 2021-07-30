@@ -3,6 +3,7 @@ import tkinter.messagebox as messagebox
 from tkinter import ttk
 from api import todolist
 from base import task, duedate , task_from_str, check_input
+from clock import Clock
 
 def refresh_list():
     '''this is a fuction that refreshes the listbox'''
@@ -97,6 +98,8 @@ def setlabels(root):
     head_label=tk.Label(root,text='Task Assistant',font=('Ariel',18),bg='#cffefa',fg='#084d81',relief='raised')
     head_label.place(x=190,y=10,width=206,height=48)
 
+    clk_label=Clock(root)
+    clk_label.place(x=190,y=60,width=206,height=48)
 
     task_entry=EntryWithPlaceholder(root,'enter task description',"#084d81",font=('Ariel',10),bg="#cffefa",textvar=TaskDesc)
     task_entry.place(x=80,y=100,width=227,height=30)
